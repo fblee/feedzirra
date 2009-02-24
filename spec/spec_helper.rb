@@ -16,7 +16,9 @@ end
 def sample_atom_entry_content
   File.read("#{File.dirname(__FILE__)}/sample_feeds/AmazonWebServicesBlogFirstEntryContent.xml")
 end
-
+def sample_web_page
+  File.read("#{File.dirname(__FILE__)}/sample_feeds/BBCNewsWebPage.html")
+end
 def sample_rdf_feed
   File.read("#{File.dirname(__FILE__)}/sample_feeds/HREFConsideredHarmful.xml")
 end

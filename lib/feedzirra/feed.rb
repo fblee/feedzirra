@@ -78,7 +78,20 @@ module Feedzirra
       else
         xml = c.body_str
       end
-      
+
+      # if we retrieved a web page, rather than RSS, look for a linked RSS feed
+      if c.header_str.match(/Content-Type: text\/html/)
+        html = c.body_str
+        # parse the web page for the URL of an embedded RSS feed
+        parsed_page = WebPage.parse(html)
+
+        if !parsed_page.nil? && !parsed_page.feed_url.nil?
+            xml = fetch_raw(parsed_page.feed_url)
+        else
+            xml = c.body_str
+        end
+      end
+
       xml
     end
     

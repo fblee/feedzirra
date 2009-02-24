@@ -25,6 +25,7 @@ require 'feedzirra/rss'
 require 'feedzirra/rdf'
 require 'feedzirra/atom'
 require 'feedzirra/atom_feed_burner'
+require 'feedzirra/web_page'
 
 module Feedzirra
   VERSION = "0.0.3"

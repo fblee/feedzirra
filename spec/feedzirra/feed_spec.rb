@@ -29,7 +29,20 @@ describe Feedzirra::Feed do
         feed.title.should == "Paul Dix Explains Nothing"
         feed.entries.first.published.to_s.should == "Thu Jan 22 15:50:22 UTC 2009"
         feed.entries.size.should == 5
-      end      
+      end
+
+      it "should parse a web page" do
+        real_bbc_rss_url = "http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss.xml"
+        feed = Feedzirra::WebPage.parse(sample_web_page)
+        feed.feed_url.should == real_bbc_rss_url
+      end
+
+      it "should parse BBC news and get the RSS feed" do
+        bbc_web_url = 'http://news.bbc.co.uk/'
+        feed = Feedzirra::Feed.fetch_and_parse(bbc_web_url)
+        feed.title.should == 'BBC News | News Front Page | UK Edition'
+        feed.entry.size.should > 0
+      end
     end
     
     context "when there's no available parser" do
