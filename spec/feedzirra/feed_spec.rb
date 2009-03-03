@@ -61,6 +61,12 @@ describe Feedzirra::Feed do
         feed.url.should == avc_home_url
         feed.entries.size.should > 0
       end
+
+      it "should extract image URLs" do
+        feed = Feedzirra::Feed.parse(sample_rss_with_images)
+        feed.entries.size.should > 0
+        feed.entries[0].image.should == 'http://www.gravatar.com/avatar/5c6727e573b7be20dea6a6880856a888?s=96&#38;d=identicon'
+      end
     end
     
     context "when there's no available parser" do

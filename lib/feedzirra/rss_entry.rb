@@ -14,5 +14,8 @@ module Feedzirra
     element :pubDate, :as => :published
     element :"dc:date", :as => :published
     elements :category, :as => :categories
+
+    # TODO: wtf... sometimes type="image/jpeg", sometimes medium="image", what are we to do?
+    element :"media:content", :as => :image, :value => :url
   end
 end

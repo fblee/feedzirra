@@ -35,6 +35,10 @@ def sample_rss_feed_burner_feed
   File.read("#{File.dirname(__FILE__)}/sample_feeds/SamHarrisAuthorPhilosopherEssayistAtheist.xml")
 end
 
+def sample_rss_with_images
+  File.read("#{File.dirname(__FILE__)}/sample_feeds/MikeDoesTech.xml")
+end
+
 def sample_rss_feed
   File.read("#{File.dirname(__FILE__)}/sample_feeds/TenderLovemaking.xml")
 end
