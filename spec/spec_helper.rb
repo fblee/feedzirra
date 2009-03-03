@@ -19,6 +19,10 @@ end
 def sample_web_page
   File.read("#{File.dirname(__FILE__)}/sample_feeds/BBCNewsWebPage.html")
 end
+def sample_web_page2
+  File.read("#{File.dirname(__FILE__)}/sample_feeds/avc.com.html")
+end
+
 def sample_rdf_feed
   File.read("#{File.dirname(__FILE__)}/sample_feeds/HREFConsideredHarmful.xml")
 end

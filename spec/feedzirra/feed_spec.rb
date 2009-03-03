@@ -35,13 +35,31 @@ describe Feedzirra::Feed do
         real_bbc_rss_url = "http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss.xml"
         feed = Feedzirra::WebPage.parse(sample_web_page)
         feed.feed_url.should == real_bbc_rss_url
+
+        real_avc_url = 'http://feeds.feedburner.com/AVc'
+        feed = Feedzirra::WebPage.parse(sample_web_page2)
+        feed.feed_url.should == real_avc_url
+
       end
 
       it "should parse BBC news and get the RSS feed" do
         bbc_web_url = 'http://news.bbc.co.uk/'
+        real_bbc_rss_url = "http://newsrss.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss.xml"
         feed = Feedzirra::Feed.fetch_and_parse(bbc_web_url)
         feed.title.should == 'BBC News | News Front Page | UK Edition'
-        feed.entry.size.should > 0
+        feed.feed_url.should == real_bbc_rss_url
+        feed.entries.size.should > 0
+
+        real_avc_url = 'http://feeds2.feedburner.com/AVc'
+        # for this test, avc.com is where you visit, but the feed itself reports its
+        # canonical location as www.avc.com/a_vc/ which is fine, but means this test looks
+        # a bit weird!
+        avc_web_url = 'http://www.avc.com/'
+        avc_home_url = 'http://www.avc.com/a_vc/'
+        feed = Feedzirra::Feed.fetch_and_parse(avc_web_url)
+        feed.feed_url.should == real_avc_url
+        feed.url.should == avc_home_url
+        feed.entries.size.should > 0
       end
     end
     
@@ -125,7 +143,7 @@ describe Feedzirra::Feed do
   
   describe "fetching feeds" do
     before(:each) do
-      @paul_feed_url = "http://feeds.feedburner.com/PaulDixExplainsNothing"
+      @paul_feed_url = "http://feeds2.feedburner.com/PaulDixExplainsNothing"
       @trotter_feed_url = "http://feeds2.feedburner.com/trottercashion"
     end
         
@@ -142,7 +160,7 @@ describe Feedzirra::Feed do
       it "should take an optional on_failure lambda"
       
       it "should return raw xml" do
-        Feedzirra::Feed.fetch_raw(@paul_feed_url).should =~ /^#{Regexp.escape('<?xml version="1.0" encoding="UTF-8"?>')}/
+        Feedzirra::Feed.fetch_raw(@paul_feed_url).should =~ /^#{Regexp.escape('<?xml version="1.0" encoding="utf-8"?>')}/
       end
       
       it "should take multiple feed urls and return a hash of urls and response xml" do

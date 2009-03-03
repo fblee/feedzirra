@@ -86,10 +86,12 @@ module Feedzirra
         parsed_page = WebPage.parse(html)
 
         if !parsed_page.nil? && !parsed_page.feed_url.nil?
-            xml = fetch_raw(parsed_page.feed_url)
-        else
-            xml = c.body_str
+            # re-use the same curl instance that generated this response, so that
+            # any calling context can pick up on things like last_effective_url from it
+            c.url = parsed_page.feed_url
+            c.perform
         end
+        xml = c.body_str
       end
 
       xml
