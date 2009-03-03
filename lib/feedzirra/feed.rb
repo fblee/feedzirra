@@ -88,6 +88,10 @@ module Feedzirra
         if !parsed_page.nil? && !parsed_page.feed_url.nil?
             # re-use the same curl instance that generated this response, so that
             # any calling context can pick up on things like last_effective_url from it
+            # TODO: if the parsed_page.feed_url is relative, then what?
+#           uri = URI.parse(html_url)
+#    		c.url = uri.scheme + '://' + uri.host + url
+
             c.url = parsed_page.feed_url
             c.perform
         end

@@ -24,7 +24,11 @@ describe Feedzirra::RSS do
     it "should parse the title" do
       @feed.title.should == "Tender Lovemaking"
     end
-    
+
+    it "shoudl parse the description" do
+      @feed.description.should == 'The act of making love, tenderly.'
+    end
+
     it "should parse the url" do
       @feed.url.should == "http://tenderlovemaking.com"
     end
