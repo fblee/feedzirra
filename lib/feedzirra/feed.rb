@@ -39,7 +39,7 @@ module Feedzirra
           curl.headers["User-Agent"]        = (options[:user_agent] || USER_AGENT)
           curl.headers["If-Modified-Since"] = options[:if_modified_since].httpdate if options.has_key?(:if_modified_since)
           curl.headers["If-None-Match"]     = options[:if_none_match] if options.has_key?(:if_none_match)
-          curl.headers["Accept-encoding"]   = 'gzip, deflate'
+          curl.headers["Accept-encoding"]   = 'deflate'
           curl.follow_location = true
           curl.on_success do |c|
             responses[url] = decode_content(c)
@@ -73,14 +73,16 @@ module Feedzirra
     def self.decode_content(c)
       if c.header_str.match(/Content-Encoding: gzip/)
         begin
-          gz =  Zlib::GzipReader.new(StringIO.new(c.body_str))
+          puts "going to gunzip content"
+          gz = Zlib::GzipReader.new(StringIO.new(c.body_str))
           xml = gz.read
           gz.close
-        rescue
+        rescue => e
+            puts "WARNING: could not gzip decode content: #{e}"
           xml = c.body_str # maybe it wasn't compressed after all!
         end
       elsif c.header_str.match(/Content-Encoding: deflate/)
-        xml = Zlib::Deflate.inflate(c.body_str)
+        xml = Zlib::Inflate.inflate(c.body_str)
       else
         xml = c.body_str
       end
@@ -95,8 +97,7 @@ module Feedzirra
             
             # If the extracted URL is relative to the web page URL, create an absolute
             # URL we can use
-            # TODO: test this!
-            unless parsed_page.feed_url =~ '://'
+            unless parsed_page.feed_url =~ /:\/\//
                 # parse the URL of the web page that was retrieved
                 uri = URI.parse(c.last_effective_url)
                 # reconstruct a feed URL
@@ -131,7 +132,7 @@ module Feedzirra
         curl.headers["User-Agent"]        = (options[:user_agent] || USER_AGENT)
         curl.headers["If-Modified-Since"] = options[:if_modified_since].httpdate if options.has_key?(:if_modified_since)
         curl.headers["If-None-Match"]     = options[:if_none_match] if options.has_key?(:if_none_match)
-        curl.headers["Accept-encoding"]   = 'gzip, deflate'
+        curl.headers["Accept-encoding"]   = 'deflate'
         curl.follow_location = true
         curl.on_success do |c|
           add_url_to_multi(multi, url_queue.shift, url_queue, responses, options) unless url_queue.empty?
@@ -146,6 +147,7 @@ module Feedzirra
             options[:on_success].call(url, feed) if options.has_key?(:on_success)
           else
             puts "Error determining parser for #{url} - #{c.last_effective_url}"
+            puts "header: #{c.header_str}"
           end
         end
         curl.on_failure do |c|

@@ -67,6 +67,14 @@ describe Feedzirra::Feed do
         feed.entries.size.should > 0
         feed.entries[0].image.should == 'http://www.gravatar.com/avatar/5c6727e573b7be20dea6a6880856a888?s=96&#38;d=identicon'
       end
+
+      it "should determine parser correctly" do
+        feed = Feedzirra::Feed.parse(sample_problematic_parser_detection)
+        feed.entries.size.should > 0
+        feed = Feedzirra::Feed.fetch_and_parse('http://www.independent.co.uk/news/world/rss')
+        feed.entries.size.should > 0
+        puts feed.title
+      end
     end
     
     context "when there's no available parser" do
