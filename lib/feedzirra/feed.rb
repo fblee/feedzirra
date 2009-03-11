@@ -1,3 +1,5 @@
+require 'uri'
+
 module Feedzirra
   class NoParserAvailable < StandardError; end
   
@@ -70,9 +72,13 @@ module Feedzirra
     
     def self.decode_content(c)
       if c.header_str.match(/Content-Encoding: gzip/)
-        gz =  Zlib::GzipReader.new(StringIO.new(c.body_str))
-        xml = gz.read
-        gz.close
+        begin
+          gz =  Zlib::GzipReader.new(StringIO.new(c.body_str))
+          xml = gz.read
+          gz.close
+        rescue
+          xml = c.body_str # maybe it wasn't compressed after all!
+        end
       elsif c.header_str.match(/Content-Encoding: deflate/)
         xml = Zlib::Deflate.inflate(c.body_str)
       else
@@ -86,12 +92,19 @@ module Feedzirra
         parsed_page = WebPage.parse(html)
 
         if !parsed_page.nil? && !parsed_page.feed_url.nil?
+            
+            # If the extracted URL is relative to the web page URL, create an absolute
+            # URL we can use
+            # TODO: test this!
+            unless parsed_page.feed_url =~ '://'
+                # parse the URL of the web page that was retrieved
+                uri = URI.parse(c.last_effective_url)
+                # reconstruct a feed URL
+                parsed_page.feed_url = uri.scheme + '://' + uri.host + parsed_page.feed_url
+            end
+
             # re-use the same curl instance that generated this response, so that
             # any calling context can pick up on things like last_effective_url from it
-            # TODO: if the parsed_page.feed_url is relative, then what?
-#           uri = URI.parse(html_url)
-#    		c.url = uri.scheme + '://' + uri.host + url
-
             c.url = parsed_page.feed_url
             c.perform
         end
