@@ -39,7 +39,6 @@ module Feedzirra
           curl.headers["User-Agent"]        = (options[:user_agent] || USER_AGENT)
           curl.headers["If-Modified-Since"] = options[:if_modified_since].httpdate if options.has_key?(:if_modified_since)
           curl.headers["If-None-Match"]     = options[:if_none_match] if options.has_key?(:if_none_match)
-          curl.headers["Accept-encoding"]   = 'deflate'
           curl.follow_location = true
           curl.on_success do |c|
             responses[url] = decode_content(c)
@@ -132,7 +131,6 @@ module Feedzirra
         curl.headers["User-Agent"]        = (options[:user_agent] || USER_AGENT)
         curl.headers["If-Modified-Since"] = options[:if_modified_since].httpdate if options.has_key?(:if_modified_since)
         curl.headers["If-None-Match"]     = options[:if_none_match] if options.has_key?(:if_none_match)
-        curl.headers["Accept-encoding"]   = 'deflate'
         curl.follow_location = true
         curl.on_success do |c|
           add_url_to_multi(multi, url_queue.shift, url_queue, responses, options) unless url_queue.empty?
@@ -147,7 +145,6 @@ module Feedzirra
             options[:on_success].call(url, feed) if options.has_key?(:on_success)
           else
             puts "Error determining parser for #{url} - #{c.last_effective_url}"
-            puts "header: #{c.header_str}"
           end
         end
         curl.on_failure do |c|
