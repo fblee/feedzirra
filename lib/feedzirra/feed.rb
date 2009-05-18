@@ -144,7 +144,9 @@ module Feedzirra
             responses[url] = feed
             options[:on_success].call(url, feed) if options.has_key?(:on_success)
           else
-            puts "Error determining parser for #{url} - #{c.last_effective_url}"
+              url_message = url
+              url_message += "- #{c.last_effective_url}" unless url == c.last_effective_url
+              raise NoParserAvailable.new("No valid parser for #{url_message}")
           end
         end
         curl.on_failure do |c|
