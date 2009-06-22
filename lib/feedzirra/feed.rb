@@ -72,12 +72,11 @@ module Feedzirra
     def self.decode_content(c)
       if c.header_str.match(/Content-Encoding: gzip/)
         begin
-          puts "going to gunzip content"
           gz = Zlib::GzipReader.new(StringIO.new(c.body_str))
           xml = gz.read
           gz.close
         rescue => e
-            puts "WARNING: could not gzip decode content: #{e}"
+          puts "WARNING: could not gzip decode content: #{e}"
           xml = c.body_str # maybe it wasn't compressed after all!
         end
       elsif c.header_str.match(/Content-Encoding: deflate/)
