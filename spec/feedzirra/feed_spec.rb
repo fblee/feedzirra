@@ -50,7 +50,7 @@ describe Feedzirra::Feed do
         feed.feed_url.should == real_bbc_rss_url
         feed.entries.size.should > 0
 
-        real_avc_url = 'http://feeds2.feedburner.com/AVc'
+        real_avc_url = 'http://feeds.feedburner.com/AVc'
         # for this test, avc.com is where you visit, but the feed itself reports its
         # canonical location as www.avc.com/a_vc/ which is fine, but means this test looks
         # a bit weird!
@@ -73,7 +73,7 @@ describe Feedzirra::Feed do
         feed.entries.size.should > 0
         feed = Feedzirra::Feed.fetch_and_parse('http://www.independent.co.uk/news/world/rss')
         feed.entries.size.should > 0
-        puts feed.title
+        #puts feed.title
       end
     end
     
@@ -157,8 +157,8 @@ describe Feedzirra::Feed do
   
   describe "fetching feeds" do
     before(:each) do
-      @paul_feed_url = "http://feeds2.feedburner.com/PaulDixExplainsNothing"
-      @trotter_feed_url = "http://feeds2.feedburner.com/trottercashion"
+      @paul_feed_url = "http://feeds.feedburner.com/PaulDixExplainsNothing"
+      @trotter_feed_url = "http://feeds.feedburner.com/trottercashion"
     end
         
     describe "handling many feeds" do
@@ -174,7 +174,7 @@ describe Feedzirra::Feed do
       it "should take an optional on_failure lambda"
       
       it "should return raw xml" do
-        Feedzirra::Feed.fetch_raw(@paul_feed_url).should =~ /^#{Regexp.escape('<?xml version="1.0" encoding="utf-8"?>')}/
+        Feedzirra::Feed.fetch_raw(@paul_feed_url).should =~ /^#{Regexp.escape('<?xml version="1.0" encoding="utf-8"?>')}/i
       end
       
       it "should take multiple feed urls and return a hash of urls and response xml" do
