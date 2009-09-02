@@ -34,7 +34,6 @@ module Feedzirra
       element :issued, :as => :published
       elements :category, :as => :categories
 
-      element :guid, :as => :id
       element :guid
       
       # TODO: wtf... sometimes type="image/jpeg", sometimes medium="image", what are we to do?
