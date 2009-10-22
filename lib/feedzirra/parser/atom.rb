@@ -20,7 +20,7 @@ module Feedzirra
       elements :entry, :as => :entries, :class => AtomEntry
 
       def self.able_to_parse?(xml) #:nodoc:
-        xml =~ /(Atom)|(#{Regexp.escape("http://purl.org/atom")})/
+        xml =~ /(Atom)|(#{Regexp.escape("http://purl.org/atom")})|(#{Regexp.escape("http://www.w3.org/2005/Atom")})/
       end
       
       def url

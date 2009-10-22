@@ -27,7 +27,7 @@ module Feedzirra
       end
 
       def self.able_to_parse?(xml) #:nodoc:
-        xml =~ /\<rss|rdf/
+        xml =~ /\<rss|\<rdf/
       end
     end
 
