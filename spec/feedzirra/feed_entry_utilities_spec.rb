@@ -13,6 +13,16 @@ describe Feedzirra::FeedUtilities do
       time.class.should == Time
       time.to_s.should == "Wed Feb 20 18:05:00 UTC 2008"
     end
+      
+    it "should parse a bunch of strangely encoded stuff into Time" do
+      time = @klass.new.parse_datetime("Mon, 4 Jan 7010 13:51:39 EST")
+      time.class.should == Time
+      time.to_s.should == "Mon Jan 04 18:51:39 UTC 2010"
+        
+      time = @klass.new.parse_datetime("’ªÓ, 5 1“ÝÓ 2010 10:37 -0500")
+      time.class.should == Time
+      time.to_s.should == "Tue Jan 05 15:37:00 UTC 2010"
+    end
   end
   
   describe "sanitizing" do
